@@ -46,7 +46,7 @@ function LinearColorInterpolation(pixel_0, pixel_1, pixel_2) {
   const d_blue = -pixel_1.color[2] + pixel_0.color[2];
   const d_alpha = -pixel_1.color[3] + pixel_0.color[3];
 
-  // Calcula a hipotenusa
+  // Calcula a hipotenusa do pixel 2 e divide pela hipotenusa dos pixels 0 e 1
   const hypo = Math.sqrt(Math.pow(delta_x_2, 2) + Math.pow(delta_y_2, 2)) / Math.sqrt(Math.pow(delta_x, 2) + Math.pow(delta_y, 2));
 
   // Calcula a cor de cada pixel
@@ -87,7 +87,7 @@ function DrawPixelLineX(pixel_0, pixel_1) {
       decision_factor += 2 * (delta_y - delta_x);
     }
     else {
-      // decision_factor < 0 = incremento para E
+      // decision_factor <= 0 = incremento para E
       // Não incrementa y
       decision_factor += 2 * delta_y;
     }
@@ -123,7 +123,7 @@ function DrawPixelLineY(pixel_0, pixel_1) {
       pixel_2.x += incr_x;
       decision_factor += 2 * (delta_x - delta_y);
     } else {
-      // decision_factor < 0 = incremento para E
+      // decision_factor <= 0 = incremento para E
       // Não incrementa x
       decision_factor += 2 * delta_x;
     }
