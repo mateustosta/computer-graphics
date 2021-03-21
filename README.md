@@ -10,7 +10,7 @@ This repository contains the main algorithms developed in the course Introductio
 
 ## References:
 - Mathematical elements for computer graphics.  ROGERS, David; ADAMS, J. Alan.  NewYork:  McGraw-Hill, 1990.  611 p.  ISBN: 0070535299.
-- Computer  graphics:   principles  and  practice.   FOLEY,  James  D;  DAM,  Andries  Van;FEINER, Steven K. Boston:  Addison-Wesley, 2a.  edi ̧c ̃ao.  1996.  1175 p.  ISBN: 0201848406. (MAIN REFERENCE)
+- Computer  graphics:   principles  and  practice.   FOLEY,  James  D;  DAM,  Andries  Van;FEINER, Steven K. Boston:  Addison-Wesley, 2a.  edição.  1996.  1175 p.  ISBN: 0201848406. (MAIN REFERENCE)
 
 ## Assignments:
  - [Assignment #1: Introduction to Rasterization Algorithms](https://github.com/mateustosta/computer-graphics/tree/master/Assignment%20%231/bresenham-line-algorithm)
