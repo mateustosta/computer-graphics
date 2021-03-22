@@ -31,7 +31,40 @@ class Pixel {
 let color_buffer = new Canvas("canvas");
 color_buffer.clear();
 
-function LinearColorInterpolation(pixel_0, pixel_1, pixel_2) {
+function LinearColorInterpolation2(pixel_0, pixel_1, pixel_2, axis) {
+  let d_red = 0;
+  let d_green = 0;
+  let d_blue = 0;
+  let d_alpha = 0;
+
+  if (axis == 'x') {
+    // Variação de X
+    const delta_x = pixel_1.x - pixel_0.x;
+
+    // Define o quanto cada cor será incrementada/decrementada a cada pixel
+    d_red = (pixel_1.color[0] - pixel_0.color[0]) / delta_x;
+    d_green = (pixel_1.color[1] - pixel_0.color[1]) / delta_x;
+    d_blue = (pixel_1.color[2] - pixel_0.color[2]) / delta_x;
+    d_alpha = (pixel_1.color[3] - pixel_0.color[3]) / delta_x;
+  } else {
+    // Variação de Y
+    const delta_y = pixel_1.y - pixel_0.y;
+
+    // Define o quanto cada cor será incrementada/decrementada a cada pixel
+    d_red = (pixel_1.color[0] - pixel_0.color[0]) / delta_y;
+    d_green = (pixel_1.color[1] - pixel_0.color[1]) / delta_y;
+    d_blue = (pixel_1.color[2] - pixel_0.color[2]) / delta_y;
+    d_alpha = (pixel_1.color[3] - pixel_0.color[3]) / delta_y;
+  }
+
+  // Calcula a cor de cada pixel
+  const color = [pixel_2.color[0] + d_red, pixel_2.color[1] + d_green, pixel_2.color[2] + d_blue, pixel_2.color[3] + d_alpha];
+
+  // Seta as cores novas para o pixel
+  pixel_2.color = color;
+}
+
+function LinearColorInterpolation1(pixel_0, pixel_1, pixel_2) {
   // Variações de x e y
   const delta_x = pixel_1.x - pixel_0.x;
   const delta_y = pixel_1.y - pixel_0.y;
@@ -79,7 +112,8 @@ function DrawPixelLineX(pixel_0, pixel_1) {
   var decision_factor = 2 * delta_y - delta_x; // fator de decisão para o primeiro pixel
 
   while (pixel_2.x <= pixel_1.x) {
-    LinearColorInterpolation(pixel_0, pixel_1, pixel_2);
+    // LinearColorInterpolation1(pixel_0, pixel_1, pixel_2);
+    LinearColorInterpolation2(pixel_0, pixel_1, pixel_2, axis = 'x');
     color_buffer.putPixel(pixel_2.x, pixel_2.y, pixel_2.color);
     // decision_factor > 0 = incremento para NE
     if (decision_factor > 0) {
@@ -116,7 +150,8 @@ function DrawPixelLineY(pixel_0, pixel_1) {
   var decision_factor = (2 * delta_x) - delta_y; // fator de decisão para o primeiro pixel
 
   while (pixel_2.y <= pixel_1.y) {
-    LinearColorInterpolation(pixel_0, pixel_1, pixel_2);
+    // LinearColorInterpolation1(pixel_0, pixel_1, pixel_2);
+    LinearColorInterpolation2(pixel_0, pixel_1, pixel_2, axis = 'y');
     color_buffer.putPixel(pixel_2.x, pixel_2.y, pixel_2.color);
     // decision_factor > 0 = incremento para NE
     if (decision_factor > 0) {
