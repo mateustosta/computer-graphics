@@ -31,6 +31,34 @@ class Pixel {
 let color_buffer = new Canvas("canvas");
 color_buffer.clear();
 
+function LinearColorInterpolation1(pixel_0, pixel_1, pixel_2) {
+  // Variações de x e y
+  const delta_x = pixel_1.x - pixel_0.x;
+  const delta_y = pixel_1.y - pixel_0.y;
+
+  // Variação do pixel 2
+  const delta_x_2 = pixel_1.x - pixel_2.x;
+  const delta_y_2 = pixel_1.x - pixel_2.x;
+
+  // Define o quanto cada cor será incrementada/decrementada a cada pixel
+  const d_red = -pixel_1.color[0] + pixel_0.color[0];
+  const d_green = -pixel_1.color[1] + pixel_0.color[1];
+  const d_blue = -pixel_1.color[2] + pixel_0.color[2];
+  const d_alpha = -pixel_1.color[3] + pixel_0.color[3];
+
+  // Calcula a hipotenusa do pixel 2 e divide pela hipotenusa dos pixels 0 e 1
+  const hypo = Math.sqrt(Math.pow(delta_x_2, 2) + Math.pow(delta_y_2, 2)) / Math.sqrt(Math.pow(delta_x, 2) + Math.pow(delta_y, 2));
+
+  // Calcula a cor de cada pixel
+  const i_red = pixel_1.color[0] + d_red * hypo;
+  const i_green = pixel_1.color[1] + d_green * hypo;
+  const i_blue = pixel_1.color[2] + d_blue * hypo;
+  const i_alpha = pixel_1.color[3] + d_alpha * hypo;
+
+  // Seta as cores em pixel_2
+  pixel_2.color = [i_red, i_green, i_blue, i_alpha];
+}
+
 function LinearColorInterpolation2(pixel_0, pixel_1, pixel_2, axis) {
   let d_red = 0;
   let d_green = 0;
@@ -62,34 +90,6 @@ function LinearColorInterpolation2(pixel_0, pixel_1, pixel_2, axis) {
 
   // Seta as cores novas para o pixel
   pixel_2.color = color;
-}
-
-function LinearColorInterpolation1(pixel_0, pixel_1, pixel_2) {
-  // Variações de x e y
-  const delta_x = pixel_1.x - pixel_0.x;
-  const delta_y = pixel_1.y - pixel_0.y;
-
-  // Variação do pixel 2
-  const delta_x_2 = pixel_1.x - pixel_2.x;
-  const delta_y_2 = pixel_1.x - pixel_2.x;
-
-  // Define o quanto cada cor será incrementada/decrementada a cada pixel
-  const d_red = -pixel_1.color[0] + pixel_0.color[0];
-  const d_green = -pixel_1.color[1] + pixel_0.color[1];
-  const d_blue = -pixel_1.color[2] + pixel_0.color[2];
-  const d_alpha = -pixel_1.color[3] + pixel_0.color[3];
-
-  // Calcula a hipotenusa do pixel 2 e divide pela hipotenusa dos pixels 0 e 1
-  const hypo = Math.sqrt(Math.pow(delta_x_2, 2) + Math.pow(delta_y_2, 2)) / Math.sqrt(Math.pow(delta_x, 2) + Math.pow(delta_y, 2));
-
-  // Calcula a cor de cada pixel
-  const i_red = pixel_1.color[0] + d_red * hypo;
-  const i_green = pixel_1.color[1] + d_green * hypo;
-  const i_blue = pixel_1.color[2] + d_blue * hypo;
-  const i_alpha = pixel_1.color[3] + d_alpha * hypo;
-
-  // Seta as cores em pixel_2
-  pixel_2.color = [i_red, i_green, i_blue, i_alpha];
 }
 
 function DrawPixelLineX(pixel_0, pixel_1) {
