@@ -216,3 +216,15 @@ function MidPointLineAlgorithm(x0, y0, x1, y1, color_0, color_1) {
 
 // MidPointLineAlgorithm(25, 30, 100, 80, [255, 0, 0, 255], [255, 255, 0, 255]);
 // DrawTriangle(25, 30, 50, 100, 100, 15, [255, 0, 0, 255], [0, 0, 255, 255], [0, 255, 0, 255])
+
+//Código para desenhar em todos os octantes
+/*
+MidPointLineAlgorithm(32, 64, 96, 64, [255, 0, 0, 255], [255, 255, 0, 255]);
+MidPointLineAlgorithm(64, 96, 64, 32, [255, 0, 0, 255], [255, 255, 0, 255]);
+MidPointLineAlgorithm(32, 48, 96, 80, [255, 0, 0, 255], [255, 255, 0, 255]);
+MidPointLineAlgorithm(32, 32, 96, 96, [255, 0, 0, 255], [255, 255, 0, 255]);
+MidPointLineAlgorithm(48, 32, 80, 96, [255, 0, 0, 255], [255, 255, 0, 255]);
+MidPointLineAlgorithm(48, 96, 80, 32, [255, 0, 0, 255], [255, 255, 0, 255]);
+MidPointLineAlgorithm(32, 80, 96, 48, [255, 0, 0, 255], [255, 255, 0, 255]);
+MidPointLineAlgorithm(32, 96, 96, 32, [255, 0, 0, 255], [255, 255, 0, 255]);
+*/
