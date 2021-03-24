@@ -219,12 +219,12 @@ function MidPointLineAlgorithm(x0, y0, x1, y1, color_0, color_1) {
 
 //Código para desenhar em todos os octantes
 /*
-MidPointLineAlgorithm(32, 64, 96, 64, [255, 0, 0, 255], [255, 255, 0, 255]);
-MidPointLineAlgorithm(64, 96, 64, 32, [255, 0, 0, 255], [255, 255, 0, 255]);
-MidPointLineAlgorithm(32, 48, 96, 80, [255, 0, 0, 255], [255, 255, 0, 255]);
-MidPointLineAlgorithm(32, 32, 96, 96, [255, 0, 0, 255], [255, 255, 0, 255]);
-MidPointLineAlgorithm(48, 32, 80, 96, [255, 0, 0, 255], [255, 255, 0, 255]);
-MidPointLineAlgorithm(48, 96, 80, 32, [255, 0, 0, 255], [255, 255, 0, 255]);
-MidPointLineAlgorithm(32, 80, 96, 48, [255, 0, 0, 255], [255, 255, 0, 255]);
-MidPointLineAlgorithm(32, 96, 96, 32, [255, 0, 0, 255], [255, 255, 0, 255]);
+MidPointLineAlgorithm(0, 64, 128, 64, [255, 0, 0, 255], [255, 255, 0, 255]);
+MidPointLineAlgorithm(64, 128, 64, 0, [255, 0, 0, 255], [255, 255, 0, 255]);
+MidPointLineAlgorithm(0, 32, 128, 96, [255, 0, 0, 255], [255, 255, 0, 255]);
+MidPointLineAlgorithm(0, 0, 128, 128, [255, 0, 0, 255], [255, 255, 0, 255]);
+MidPointLineAlgorithm(32, 0, 96, 128, [255, 0, 0, 255], [255, 255, 0, 255]);
+MidPointLineAlgorithm(32, 128, 96, 0, [255, 0, 0, 255], [255, 255, 0, 255]);
+MidPointLineAlgorithm(0, 96, 128, 32, [255, 0, 0, 255], [255, 255, 0, 255]);
+MidPointLineAlgorithm(0, 128, 128, 0, [255, 0, 0, 255], [255, 255, 0, 255]);
 */
