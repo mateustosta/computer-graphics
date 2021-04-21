@@ -33,12 +33,128 @@ let edges = [[0, 1],
  * Matriz Model (modelagem): Esp. Objeto --> Esp. Universo. 
  * OBS: A matriz está carregada inicialmente com a identidade.
  *****************************************************************************/
+function applyTransforms(m_model) {
+    // Transformações implementadas
+    let m_scale = scaleMatrix(5/2, 3.0, 4.0);
+    let m_rotation = rotationMatrix(30, 'X');  // o ângulo deve ser passado em graus
+    let m_translation = translationMatrix(20.0, 20.0, 1.0);
+    let m_shear = shearMatrix(2.0, 3.0, 1.0);
+    let m_reflection = reflectionMatrix('XY');
+
+    // Aplica a transformação na matriz model
+    m_model.multiplyMatrices(m_model, m_scale);
+    m_model.multiplyMatrices(m_model, m_translation);
+    m_model.multiplyMatrices(m_model, m_shear);
+    m_model.multiplyMatrices(m_model, m_rotation);
+    m_model.multiplyMatrices(m_model, m_reflection);
+
+    return m_model;
+}
+
+function scaleMatrix(scale_x=1.0, scale_y=1.0, scale_z=1.0) {
+    // Matriz de escala
+    let m_scale = new THREE.Matrix4();
+
+    m_scale.set(scale_x, 0.0, 0.0, 0.0,
+                0.0, scale_y, 0.0, 0.0,
+                0.0, 0.0, scale_z, 0.0,
+                0.0, 0.0, 0.0, 1.0);
+
+    return m_scale;
+}
+
+function rotationMatrix(tetha=30, axis='X') {
+    // Ângulo em graus
+    let rotation_theta = tetha;
+
+    // Seno e Cosseno
+    let sin = Math.sin(rotation_theta*Math.PI/180.0);
+    let cos = Math.cos(rotation_theta*Math.PI/180.0);
+
+    // Matriz de rotação
+    let m_rotation = new THREE.Matrix4();
+
+    if (axis == 'X'){
+        // Rotação em X
+        m_rotation.set(1.0, 0.0, 0.0, 0.0,
+                       0.0, cos, -sin, 0.0,
+                       0.0, sin, cos, 0.0,
+                       0.0, 0.0, 0.0, 1.0);
+    } else if(axis == 'Y') {
+        // Rotação em Y
+        m_rotation.set(cos, 0.0, sin, 0.0,
+                       0.0, 1.0, 0.0, 0.0,
+                       -sin, 0.0, cos, 0.0,
+                       0.0, 0.0, 0.0, 1.0);
+    } else {
+        // Rotação em Z
+        m_rotation.set(cos, -sin, 0.0, 0.0,
+                       sin, cos, 0.0, 0.0,
+                       0.0, 0.0, 1.0, 0.0,
+                       0.0, 0.0, 0.0, 1.0);
+    }
+
+    return m_rotation;
+}
+
+function translationMatrix(x=1.0, y=1.0, z=1.0){
+    // Matriz de translação
+    let m_translation = new THREE.Matrix4();
+
+    m_translation.set(1.0, 0.0, 0.0, x,
+                      0.0, 1.0, 0.0, y,
+                      0.0, 0.0, 1.0, z,
+                      0.0, 0.0, 0.0, 1.0);
+
+    return m_translation;
+}
+
+function shearMatrix(x=1.0, y=2.0, z=3.0) {
+    // Matriz de shear
+    let m_shear = new THREE.Matrix4();
+
+    m_shear.set(1.0, y, z, 0.0,
+                x, 1.0, z, 0.0,
+                x, y, 1.0, 0,
+                0.0, 0.0, 0.0, 1.0);
+
+    return m_shear;
+}
+
+function reflectionMatrix(plane='XY') {
+    // Matriz de reflexão
+    let m_reflection = new THREE.Matrix4();
+
+    if (plane == 'XY') {
+        m_reflection.set(1.0, 0.0, 0.0, 0.0,
+                         0.0, 1.0, 0.0, 0.0,
+                         0.0, 0.0, -1.0, 0.0,
+                         0.0, 0.0, 0.0, 1.0);        
+    } else if (plane == 'YZ') {
+        m_reflection.set(-1.0, 0.0, 0.0, 0.0,
+                         0.0, 1.0, 0.0, 0.0,
+                         0.0, 0.0, 1.0, 0.0,
+                         0.0, 0.0, 0.0, 1.0);
+    } else {
+        // Plane ZX
+        m_reflection.set(1.0, 0.0, 0.0, 0.0,
+                         0.0, -1.0, 0.0, 0.0,
+                         0.0, 0.0, 1.0, 0.0,
+                         0.0, 0.0, 0.0, 1.0);
+    }
+
+    return m_reflection;
+}
+
 let m_model = new THREE.Matrix4();
 
 m_model.set(1.0, 0.0, 0.0, 0.0,
             0.0, 1.0, 0.0, 0.0,
             0.0, 0.0, 1.0, 0.0,
             0.0, 0.0, 0.0, 1.0);
+
+// Apply transformations to m_model
+m_model = applyTransforms(m_model);
 
 for (let i = 0; i < 8; ++i)
     vertices[i].applyMatrix4(m_model);
@@ -128,4 +244,8 @@ for (let i = 0; i < 8; ++i)
 /******************************************************************************
  * Rasterização
  *****************************************************************************/
-color_buffer.putPixel(vertices[6].x, vertices[6].y, [255, 0, 0]);
+color = [255, 0, 0, 255];
+for (let i = 0; i < edges.length; ++i) {
+    MidPointLineAlgorithm(vertices[edges[i][0]].x, vertices[edges[i][0]].y, vertices[edges[i][1]].x, vertices[edges[i][1]].y, color, color);
+}
+// color_buffer.putPixel(vertices[6].x, vertices[6].y, [255, 0, 0]);
