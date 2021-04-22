@@ -218,11 +218,10 @@ D = (-1.3, -1.7, -2.0), D = cam_look_at - cam_pos
 let z_cam = new THREE.Vector3();
 let D = new THREE.Vector3();
 
-// D deveria receber uma cópia de cam_pos multiplicado por -1, porém, para
-// calcular z_cam iremos multiplicar D por -1 novamente, então não precisamos
-// multiplicar.
-D.copy(cam_pos);
-D.sub(cam_look_at); // Neste caso, a subtração é irrelevante (0,0,0)
+// D recebe uma cópia de cam_look_at para depois subtrair o valor de cam_pos
+// ao final multiplicamos por -1
+D.copy(cam_look_at);
+D.sub(cam_pos).multiplyScalar(-1); // Neste caso, a subtração é irrelevante (0,0,0)
 
 // z_cam recebe D normalizado
 z_cam = D.normalize();
