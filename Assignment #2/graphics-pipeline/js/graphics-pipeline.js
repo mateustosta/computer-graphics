@@ -35,19 +35,25 @@ let edges = [[0, 1],
  *****************************************************************************/
 function applyTransforms(m_model) {
     // Transformações implementadas
-    let m_scale = scaleMatrix(5/2, 3.0, 4.0);
-    let m_rotation = rotationMatrix(30, 'X');  // o ângulo deve ser passado em graus
-    let m_translation = translationMatrix(20.0, 20.0, 1.0);
-    let m_shear = shearMatrix(2.0, 3.0, 1.0);
-    let m_reflection = reflectionMatrix('XY');
+    // As linhas estão comentadas para que não
+    // seja feita nenhuma operação com matriz que não será utilizada
+    // let m_scale = scaleMatrix(1.0, 1.0, 1.0);
+    // let m_rotation = rotationMatrix(30, 'X');  // o ângulo deve ser passado em graus
+    // let m_translation = translationMatrix(-0.2, 0.0, 1.0);
+    // let m_shear = shearMatrix(2.0, 0.3, 0.3, axis='X');
+    // let m_reflection = reflectionMatrix('XY');
+    // let m_identity = identityMatrix();
+
+    // Carrega a matriz identidade em m_model
+    m_model = identityMatrix();
 
     // Aplica a transformação na matriz model
-    m_model.multiplyMatrices(m_model, m_scale);
-    m_model.multiplyMatrices(m_model, m_translation);
-    m_model.multiplyMatrices(m_model, m_shear);
-    m_model.multiplyMatrices(m_model, m_rotation);
-    m_model.multiplyMatrices(m_model, m_reflection);
-
+    // m_model = m_model.clone().multiply(m_scale);
+    // m_model = m_model.clone().multiply(m_translation);
+    // m_model = m_model.clone().multiply(m_shear);
+    // m_model = m_model.clone().multiply(m_rotation);
+    // m_model = m_model.clone().multiply(m_reflection);
+    
     return m_model;
 }
 
@@ -109,14 +115,27 @@ function translationMatrix(x=1.0, y=1.0, z=1.0){
     return m_translation;
 }
 
-function shearMatrix(x=1.0, y=2.0, z=3.0) {
+function shearMatrix(x=1.0, y=2.0, z=3.0, axis='X') {
     // Matriz de shear
     let m_shear = new THREE.Matrix4();
 
-    m_shear.set(1.0, y, z, 0.0,
-                x, 1.0, z, 0.0,
-                x, y, 1.0, 0,
-                0.0, 0.0, 0.0, 1.0);
+    if (axis == 'X'){
+        m_shear.set(1.0, 0.0, 0.0, 0.0,
+                    y, 1.0, 0.0, 0.0,
+                    z, 0.0, 1.0, 0.0,
+                    0.0, 0.0, 0.0, 1.0);
+    } else if (axis == 'Y'){
+        m_shear.set(1.0, x, 0.0, 0.0,
+                    0.0, 1.0, 0.0, 0.0,
+                    0.0, z, 1.0, 0.0,
+                    0.0, 0.0, 0.0, 1.0);
+    } else {
+        // axis == 'Z'
+        m_shear.set(1.0, 0.0, x, 0.0,
+                    0.0, 1.0, y, 0.0,
+                    0.0, 0.0, 1.0, 0.0,
+                    0.0, 0.0, 0.0, 1.0);
+    }
 
     return m_shear;
 }
@@ -146,12 +165,20 @@ function reflectionMatrix(plane='XY') {
     return m_reflection;
 }
 
-let m_model = new THREE.Matrix4();
+function identityMatrix() {
+    // Matriz identidade
+    let m_identity = new THREE.Matrix4();
 
-m_model.set(1.0, 0.0, 0.0, 0.0,
-            0.0, 1.0, 0.0, 0.0,
-            0.0, 0.0, 1.0, 0.0,
-            0.0, 0.0, 0.0, 1.0);
+    m_identity.set(1.0, 0.0, 0.0, 0.0,
+                   0.0, 1.0, 0.0, 0.0,
+                   0.0, 0.0, 1.0, 0.0,
+                   0.0, 0.0, 0.0, 1.0);
+
+    return m_identity;
+}
+
+// Cria a matriz model
+let m_model = new THREE.Matrix4();
 
 // Apply transformations to m_model
 m_model = applyTransforms(m_model);
@@ -173,27 +200,65 @@ let cam_up = new THREE.Vector3(0.0, 1.0, 0.0);      // vetor Up da câmera.
 
 // Derivar os vetores da base da câmera a partir dos parâmetros informados acima.
 
-// ---------- implementar aqui ----------------------------------------------
+// z_cam = -D/|D|
+/*
+
+                 cam_pos(1.3, 1.7, 2.0) - Origem do espaço da câmera
+                *
+               /
+              /
+             /
+            \/
+            * (0, 0, 0) - Origem do espaço do universo
+
+z_cam aponta na direção contrária de D. D é o vetor direção, neste caso,
+D = (0 - 1.3, 0 - 1.7, 0 - 2.0), logo
+D = (-1.3, -1.7, -2.0), D = cam_pos - cam_look_at
+*/
+let z_cam = new THREE.Vector3();
+let D = new THREE.Vector3();
+
+// D deveria receber uma cópia de cam_pos multiplicado por -1, porém, para
+// calcular z_cam iremos multiplicar D por -1 novamente, então não precisamos
+// multiplicar.
+D.copy(cam_pos);
+D.sub(cam_look_at); // Neste caso, a subtração é irrelevante (0,0,0)
+
+// z_cam recebe D normalizado
+z_cam = D.normalize();
+
+// x_cam = up cross z_cam / norm(up cross z_cam)
+let x_cam = new THREE.Vector3();
+x_cam = cam_up.clone().cross(z_cam).normalize();
+
+// y_cam = z_cam cross x_cam
+// Não precisamos dividir pela norma pois z_cam e x_cam já são unitários
+let y_cam = new THREE.Vector3();
+y_cam = z_cam.clone().cross(x_cam);
 
 // Construir 'm_bt', a inversa da matriz de base da câmera.
-
-// ---------- implementar aqui ----------------------------------------------
 let m_bt = new THREE.Matrix4();
 
-m_bt.set(1.0, 0.0, 0.0, 0.0,
-         0.0, 1.0, 0.0, 0.0,
-         0.0, 0.0, 1.0, 0.0,
+m_bt.set(x_cam.x, x_cam.y, x_cam.z, 0.0,
+         y_cam.x, y_cam.y, y_cam.z, 0.0,
+         z_cam.x, z_cam.y, z_cam.z, 0.0,
          0.0, 0.0, 0.0, 1.0);
 
 // Construir a matriz 'm_t' de translação para tratar os casos em que as
 // origens do espaço do universo e da câmera não coincidem.
-
-// ---------- implementar aqui ----------------------------------------------
 let m_t = new THREE.Matrix4();
 
-m_t.set(1.0, 0.0, 0.0, 0.0,
-        0.0, 1.0, 0.0, 0.0,
-        0.0, 0.0, 1.0, 0.0,
+// vector(t) = vector(P) - vector(O), onde P é a origem do espaço da câmera e
+// O é a origem do espaço do universo
+let P = new THREE.Vector3();
+P.copy(cam_pos);
+let O = new THREE.Vector3(0, 0, 0);
+let t = P.sub(O);
+t.multiplyScalar(-1);
+
+m_t.set(1.0, 0.0, 0.0, t.x,
+        0.0, 1.0, 0.0, t.y,
+        0.0, 0.0, 1.0, t.z,
         0.0, 0.0, 0.0, 1.0);
 
 // Constrói a matriz de visualização 'm_view' como o produto
@@ -207,14 +272,13 @@ for (let i = 0; i < 8; ++i)
  * Matriz de Projecao: Esp. Câmera --> Esp. Recorte
  * OBS: A matriz está carregada inicialmente com a identidade. 
  *****************************************************************************/
-
-// ---------- implementar aqui ----------------------------------------------
 let m_projection = new THREE.Matrix4();
+let d = 1.0;
 
 m_projection.set(1.0, 0.0, 0.0, 0.0,
                  0.0, 1.0, 0.0, 0.0,
-                 0.0, 0.0, 1.0, 0.0,
-                 0.0, 0.0, 0.0, 1.0);
+                 0.0, 0.0, 1.0, d,
+                 0.0, 0.0, -1.0/d, 0.0);
 
 for (let i = 0; i < 8; ++i)
     vertices[i].applyMatrix4(m_projection);
@@ -223,20 +287,35 @@ for (let i = 0; i < 8; ++i)
  * Homogeneizacao (divisao por W): Esp. Recorte --> Esp. Canônico
  *****************************************************************************/
 
-// ---------- implementar aqui ----------------------------------------------
+for (let i = 0; i < 8; ++i) {
+    vertices[i].divideScalar(vertices[i].w);
+}
 
 /******************************************************************************
  * Matriz Viewport: Esp. Canônico --> Esp. Tela
  * OBS: A matriz está carregada inicialmente com a identidade. 
  *****************************************************************************/
-
-// ---------- implementar aqui ----------------------------------------------
 let m_viewport = new THREE.Matrix4();
+let m_T = new THREE.Matrix4();
+let m_S = new THREE.Matrix4();
 
-m_viewport.set(1.0, 0.0, 0.0, 0.0,
-               0.0, 1.0, 0.0, 0.0,
-               0.0, 0.0, 1.0, 0.0,
-               0.0, 0.0, 0.0, 1.0);
+let width = 128;
+let height = 128;
+
+// Matriz de escala
+m_S.set(width/2, 0.0, 0.0, 0.0,
+        0.0, height/2, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0);
+
+// Matriz de translação        
+m_T.set(1.0, 0.0, 0.0, 1.0,
+        0.0, 1.0, 0.0, 1.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0);
+
+// Cria a matriz view port como sendo a matriz de escala * matriz de translação
+m_viewport = m_S.clone().multiply(m_T);
 
 for (let i = 0; i < 8; ++i)
     vertices[i].applyMatrix4(m_viewport);
@@ -248,4 +327,3 @@ color = [255, 0, 0, 255];
 for (let i = 0; i < edges.length; ++i) {
     MidPointLineAlgorithm(vertices[edges[i][0]].x, vertices[edges[i][0]].y, vertices[edges[i][1]].x, vertices[edges[i][1]].y, color, color);
 }
-// color_buffer.putPixel(vertices[6].x, vertices[6].y, [255, 0, 0]);
