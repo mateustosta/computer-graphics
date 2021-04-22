@@ -213,7 +213,7 @@ let cam_up = new THREE.Vector3(0.0, 1.0, 0.0);      // vetor Up da câmera.
 
 z_cam aponta na direção contrária de D. D é o vetor direção, neste caso,
 D = (0 - 1.3, 0 - 1.7, 0 - 2.0), logo
-D = (-1.3, -1.7, -2.0), D = cam_pos - cam_look_at
+D = (-1.3, -1.7, -2.0), D = cam_look_at - cam_pos
 */
 let z_cam = new THREE.Vector3();
 let D = new THREE.Vector3();
