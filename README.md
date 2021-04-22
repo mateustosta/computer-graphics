@@ -13,4 +13,5 @@ This repository contains the main algorithms developed in the course Introductio
 - Computer  graphics:   principles  and  practice.   FOLEY,  James  D;  DAM,  Andries  Van;FEINER, Steven K. Boston:  Addison-Wesley, 2a.  edição.  1996.  1175 p.  ISBN: 0201848406. (MAIN REFERENCE)
 
 ## Assignments:
- - [Assignment #1: Introduction to Rasterization Algorithms](https://github.com/mateustosta/computer-graphics/tree/master/Assignment%20%231/bresenham-line-algorithm)
+ - [Assignment #1: Introduction to Rasterization Algorithms](https://github.com/mateustosta/computer-graphics/tree/master/Assignment%20%231/bresenham-line-algorithm)  
+ - [Assignment #2: Implementation of Graphics Pipeline](https://github.com/mateustosta/computer-graphics/tree/main/Assignment%20%232/graphics-pipeline)
