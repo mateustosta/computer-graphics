@@ -251,7 +251,8 @@ let m_t = new THREE.Matrix4();
 // O é a origem do espaço do universo
 let P = new THREE.Vector3();
 P.copy(cam_pos);
-let O = new THREE.Vector3(0, 0, 0);
+let O = new THREE.Vector3();
+O.copy(cam_look_at);
 let t = P.sub(O);
 t.multiplyScalar(-1);
 
