@@ -4,50 +4,50 @@
  * tem comprimento igual a 2.
  *****************************************************************************/
 //                                 X     Y     Z    W (coord. homogênea)
-// let vertices = [new THREE.Vector4(-1.0, -1.0, -1.0, 1.0),
-//                 new THREE.Vector4(1.0, -1.0, -1.0, 1.0),
-//                 new THREE.Vector4(1.0, -1.0, 1.0, 1.0),
-//                 new THREE.Vector4(-1.0, -1.0, 1.0, 1.0),
-//                 new THREE.Vector4(-1.0, 1.0, -1.0, 1.0),
-//                 new THREE.Vector4(1.0, 1.0, -1.0, 1.0),
-//                 new THREE.Vector4(1.0, 1.0, 1.0, 1.0),
-//                 new THREE.Vector4(-1.0, 1.0, 1.0, 1.0)];
+let vertices = [new THREE.Vector4(-1.0, -1.0, -1.0, 1.0),
+                new THREE.Vector4(1.0, -1.0, -1.0, 1.0),
+                new THREE.Vector4(1.0, -1.0, 1.0, 1.0),
+                new THREE.Vector4(-1.0, -1.0, 1.0, 1.0),
+                new THREE.Vector4(-1.0, 1.0, -1.0, 1.0),
+                new THREE.Vector4(1.0, 1.0, -1.0, 1.0),
+                new THREE.Vector4(1.0, 1.0, 1.0, 1.0),
+                new THREE.Vector4(-1.0, 1.0, 1.0, 1.0)];
 
 // Pirâmide
-let vertices = [new THREE.Vector4(-1.0, -1.0, -1.0, 1.0),
-				new THREE.Vector4(1.0, -1.0, -1.0, 1.0),
-				new THREE.Vector4(1.0, 1.0, -1.0, 1.0),
-				new THREE.Vector4(-1.0, 1.0, -1.0, 1.0),
-				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
-				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
-				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
-				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),];
+// let vertices = [new THREE.Vector4(-1.0, -1.0, -1.0, 1.0),
+// 				new THREE.Vector4(1.0, -1.0, -1.0, 1.0),
+// 				new THREE.Vector4(1.0, 1.0, -1.0, 1.0),
+// 				new THREE.Vector4(-1.0, 1.0, -1.0, 1.0),
+// 				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
+// 				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
+// 				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
+// 				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),];
 
 /******************************************************************************
  * As 12 arestas do cubo, indicadas através dos índices dos seus vértices.
  *****************************************************************************/
-// let edges = [[0, 1],
-//              [1, 2],
-//              [2, 3],
-//              [3, 0],
-//              [4, 5],
-//              [5, 6],
-//              [6, 7],
-//              [7, 4],
-//              [0, 4],
-//              [1, 5],
-//              [2, 6],
-//              [3, 7]];
+let edges = [[0, 1],
+             [1, 2],
+             [2, 3],
+             [3, 0],
+             [4, 5],
+             [5, 6],
+             [6, 7],
+             [7, 4],
+             [0, 4],
+             [1, 5],
+             [2, 6],
+             [3, 7]];
 
 // Pirâmide
-let edges = [[0,1],
-			 [1,2],
-			 [2,3],
-			 [3,0],
-			 [0,4],
-			 [1,5],
-			 [2,6],
-			 [3,7]];
+// let edges = [[0,1],
+// 			 [1,2],
+// 			 [2,3],
+// 			 [3,0],
+// 			 [0,4],
+// 			 [1,5],
+// 			 [2,6],
+// 			 [3,7]];
 
 /******************************************************************************
  * Matriz Model (modelagem): Esp. Objeto --> Esp. Universo. 
@@ -58,7 +58,7 @@ function applyTransforms(m_model) {
     // As linhas estão comentadas para que não
     // seja feita nenhuma operação com matriz que não será utilizada
     // let m_scale = scaleMatrix(1.0, 1.0, 1.0);
-    let m_rotation = rotationMatrix(240, 'X');  // o ângulo deve ser passado em graus
+    // let m_rotation = rotationMatrix(240, 'X');  // o ângulo deve ser passado em graus
     // let m_translation = translationMatrix(-0.2, 0.0, 1.0);
     // let m_shear = shearMatrix(2.0, 0.3, 0.3, axis='X');
     // let m_reflection = reflectionMatrix('XY');
@@ -71,11 +71,11 @@ function applyTransforms(m_model) {
     // m_model = m_model.clone().multiply(m_scale);
     // m_model = m_model.clone().multiply(m_translation);
     // m_model = m_model.clone().multiply(m_shear);
-    m_model = m_model.clone().multiply(m_rotation);
+    // m_model = m_model.clone().multiply(m_rotation);
     // m_model = m_model.clone().multiply(m_reflection);
 
-    let m_rotation2 = rotationMatrix(-20, 'Y');
-    m_model = m_model.clone().multiply(m_rotation2);
+    // let m_rotation2 = rotationMatrix(-20, 'Y');
+    // m_model = m_model.clone().multiply(m_rotation2);
     
     return m_model;
 }
@@ -319,8 +319,8 @@ let m_viewport = new THREE.Matrix4();
 let m_T = new THREE.Matrix4();
 let m_S = new THREE.Matrix4();
 
-let width = 128;
-let height = 128;
+let width = 1024;
+let height = 768;
 
 // Matriz de escala
 m_S.set(width/2, 0.0, 0.0, 0.0,
