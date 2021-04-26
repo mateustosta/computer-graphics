@@ -93,12 +93,9 @@ function scaleMatrix(scale_x=1.0, scale_y=1.0, scale_z=1.0) {
 }
 
 function rotationMatrix(tetha=30, axis='X') {
-    // Ângulo em graus
-    let rotation_theta = tetha;
-
     // Seno e Cosseno
-    let sin = Math.sin(rotation_theta*Math.PI/180.0);
-    let cos = Math.cos(rotation_theta*Math.PI/180.0);
+    let sin = Math.sin(tetha*Math.PI/180.0);
+    let cos = Math.cos(tetha*Math.PI/180.0);
 
     // Matriz de rotação
     let m_rotation = new THREE.Matrix4();
