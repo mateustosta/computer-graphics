@@ -203,13 +203,13 @@ let cam_up = new THREE.Vector3(0.0, 1.0, 0.0);      // vetor Up da câmera.
 // z_cam = -D/|D|
 /*
 
-                 cam_pos(1.3, 1.7, 2.0) - Origem do espaço da câmera
+                 cam_pos(1.3, 1.7, 2.0) - Posição da câmera no espaço do universo
                 *
                /
               /
              /
             \/
-            * (0, 0, 0) - Origem do espaço do universo
+            * cam_look_at(0, 0, 0) - Ponto para o qual a câmera aponta
 
 z_cam aponta na direção contrária de D. D é o vetor direção, neste caso,
 D = (0 - 1.3, 0 - 1.7, 0 - 2.0), logo
