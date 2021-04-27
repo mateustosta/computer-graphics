@@ -75,28 +75,28 @@ function applyTransforms(matrix, transformation, parameters) {
 function getTransforms(transformation, parameters) {
     // Transformações implementadas Scale, Rotation, Translation, Shear, and Reflection
     if (transformation == 'scale') {
-        let scale_x = parameters[0].scale_x;
-        let scale_y = parameters[0].scale_y;
-        let scale_z = parameters[0].scale_z;
+        let scale_x = parameters.scale_x;
+        let scale_y = parameters.scale_y;
+        let scale_z = parameters.scale_z;
         return scaleMatrix(scale_x, scale_y, scale_z);
     } else if (transformation == 'rotation') {
         // tetha deve ser passado em graus
-        let tetha = parameters[0].tetha;
-        let axis = parameters[0].axis;
+        let tetha = parameters.tetha;
+        let axis = parameters.axis;
         return rotationMatrix(tetha, axis);
     } else if (transformation == 'translation') {
-        let x = parameters[0].x;
-        let y = parameters[0].y;
-        let z = parameters[0].z;
+        let x = parameters.x;
+        let y = parameters.y;
+        let z = parameters.z;
         return translationMatrix(x, y, z);
     } else if (transformation == 'shear') {
-        let x = parameters[0].x;
-        let y = parameters[0].y;
-        let z = parameters[0].z;
+        let x = parameters.x;
+        let y = parameters.y;
+        let z = parameters.z;
         let axis = parameters[0].axis;
         return shearMatrix(x, y, z, axis);
     } else if (transformation == 'reflection') {
-        let plane = parameters[0].plane;
+        let plane = parameters.plane;
         return reflectionMatrix(plane);
     }
 }
@@ -223,10 +223,10 @@ let m_model = new THREE.Matrix4();
 
 // Aplica transformações em m_model
 // m_model = applyTransforms(m_model);  // faz m_model ser a identidade
-m_model = applyTransforms(m_model, 'rotation', [{ tetha: 240, axis: 'X'}]);
-m_model = applyTransforms(m_model, 'rotation', [{ tetha: -20, axis: 'Y'}]);
-m_model = applyTransforms(m_model, 'scale', [{ scale_x: 1, scale_y: 1, scale_z: 2}]);
-m_model = applyTransforms(m_model, 'translation', [{ x: 0, y: 0, z: .3}]);
+m_model = applyTransforms(m_model, 'rotation', { tetha: 240, axis: 'X'});
+m_model = applyTransforms(m_model, 'rotation', { tetha: -20, axis: 'Y'});
+m_model = applyTransforms(m_model, 'scale', { scale_x: 1, scale_y: 1, scale_z: 2});
+m_model = applyTransforms(m_model, 'translation', { x: 0, y: 0, z: .3});
 
 for (let i = 0; i < 8; ++i)
     vertices[i].applyMatrix4(m_model);
@@ -302,7 +302,7 @@ let t = P.sub(O);
 t.multiplyScalar(-1);
 
 // Aplica a translação a matriz m_t
-m_t = applyTransforms(m_t, 'translation', [{ x: t.x, y: t.y, z: t.z }])
+m_t = applyTransforms(m_t, 'translation', { x: t.x, y: t.y, z: t.z })
 
 // Constrói a matriz de visualização 'm_view' como o produto
 //  de 'm_bt' e 'm_t'.
@@ -352,7 +352,7 @@ m_S.set(width/2, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.0, 1.0);
 
 // Matriz de translação
-m_T = applyTransforms(m_T, 'translation', [{ x: 1, y: 1, z:0 }])   
+m_T = applyTransforms(m_T, 'translation', { x: 1, y: 1, z:0 });
 
 // Cria a matriz view port como sendo a matriz de escala * matriz de translação
 m_viewport = m_S.clone().multiply(m_T);
