@@ -15,13 +15,13 @@
 
 // Pirâmide
 let vertices = [new THREE.Vector4(-1.0, -1.0, -1.0, 1.0),
-				new THREE.Vector4(1.0, -1.0, -1.0, 1.0),
-				new THREE.Vector4(1.0, 1.0, -1.0, 1.0),
-				new THREE.Vector4(-1.0, 1.0, -1.0, 1.0),
-				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
-				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
-				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
-				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),];
+                new THREE.Vector4(1.0, -1.0, -1.0, 1.0),
+                new THREE.Vector4(1.0, 1.0, -1.0, 1.0),
+                new THREE.Vector4(-1.0, 1.0, -1.0, 1.0),
+                new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
+                new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
+                new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
+                new THREE.Vector4(0.0, 0.0, 1.0, 1.0),];
 
 /******************************************************************************
  * As 12 arestas do cubo, indicadas através dos índices dos seus vértices.
@@ -41,13 +41,13 @@ let vertices = [new THREE.Vector4(-1.0, -1.0, -1.0, 1.0),
 
 // Pirâmide
 let edges = [[0,1],
-			 [1,2],
-			 [2,3],
-			 [3,0],
-			 [0,4],
-			 [1,5],
-			 [2,6],
-			 [3,7]];
+             [1,2],
+             [2,3],
+             [3,0],
+             [0,4],
+             [1,5],
+             [2,6],
+             [3,7]];
 
 /******************************************************************************
  * Matriz Model (modelagem): Esp. Objeto --> Esp. Universo. 
@@ -93,7 +93,7 @@ function getTransforms(transformation, parameters) {
         let x = parameters.x;
         let y = parameters.y;
         let z = parameters.z;
-        let axis = parameters[0].axis;
+        let axis = parameters.axis;
         return shearMatrix(x, y, z, axis);
     } else if (transformation == 'reflection') {
         let plane = parameters.plane;
