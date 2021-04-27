@@ -4,83 +4,104 @@
  * tem comprimento igual a 2.
  *****************************************************************************/
 //                                 X     Y     Z    W (coord. homogênea)
-let vertices = [new THREE.Vector4(-1.0, -1.0, -1.0, 1.0),
-                new THREE.Vector4(1.0, -1.0, -1.0, 1.0),
-                new THREE.Vector4(1.0, -1.0, 1.0, 1.0),
-                new THREE.Vector4(-1.0, -1.0, 1.0, 1.0),
-                new THREE.Vector4(-1.0, 1.0, -1.0, 1.0),
-                new THREE.Vector4(1.0, 1.0, -1.0, 1.0),
-                new THREE.Vector4(1.0, 1.0, 1.0, 1.0),
-                new THREE.Vector4(-1.0, 1.0, 1.0, 1.0)];
+// let vertices = [new THREE.Vector4(-1.0, -1.0, -1.0, 1.0),
+//                 new THREE.Vector4(1.0, -1.0, -1.0, 1.0),
+//                 new THREE.Vector4(1.0, -1.0, 1.0, 1.0),
+//                 new THREE.Vector4(-1.0, -1.0, 1.0, 1.0),
+//                 new THREE.Vector4(-1.0, 1.0, -1.0, 1.0),
+//                 new THREE.Vector4(1.0, 1.0, -1.0, 1.0),
+//                 new THREE.Vector4(1.0, 1.0, 1.0, 1.0),
+//                 new THREE.Vector4(-1.0, 1.0, 1.0, 1.0)];
 
 // Pirâmide
-// let vertices = [new THREE.Vector4(-1.0, -1.0, -1.0, 1.0),
-// 				new THREE.Vector4(1.0, -1.0, -1.0, 1.0),
-// 				new THREE.Vector4(1.0, 1.0, -1.0, 1.0),
-// 				new THREE.Vector4(-1.0, 1.0, -1.0, 1.0),
-// 				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
-// 				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
-// 				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
-// 				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),];
+let vertices = [new THREE.Vector4(-1.0, -1.0, -1.0, 1.0),
+				new THREE.Vector4(1.0, -1.0, -1.0, 1.0),
+				new THREE.Vector4(1.0, 1.0, -1.0, 1.0),
+				new THREE.Vector4(-1.0, 1.0, -1.0, 1.0),
+				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
+				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
+				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),
+				new THREE.Vector4(0.0, 0.0, 1.0, 1.0),];
 
 /******************************************************************************
  * As 12 arestas do cubo, indicadas através dos índices dos seus vértices.
  *****************************************************************************/
-let edges = [[0, 1],
-             [1, 2],
-             [2, 3],
-             [3, 0],
-             [4, 5],
-             [5, 6],
-             [6, 7],
-             [7, 4],
-             [0, 4],
-             [1, 5],
-             [2, 6],
-             [3, 7]];
+// let edges = [[0, 1],
+//              [1, 2],
+//              [2, 3],
+//              [3, 0],
+//              [4, 5],
+//              [5, 6],
+//              [6, 7],
+//              [7, 4],
+//              [0, 4],
+//              [1, 5],
+//              [2, 6],
+//              [3, 7]];
 
 // Pirâmide
-// let edges = [[0,1],
-// 			 [1,2],
-// 			 [2,3],
-// 			 [3,0],
-// 			 [0,4],
-// 			 [1,5],
-// 			 [2,6],
-// 			 [3,7]];
+let edges = [[0,1],
+			 [1,2],
+			 [2,3],
+			 [3,0],
+			 [0,4],
+			 [1,5],
+			 [2,6],
+			 [3,7]];
 
 /******************************************************************************
  * Matriz Model (modelagem): Esp. Objeto --> Esp. Universo. 
  * OBS: A matriz está carregada inicialmente com a identidade.
  *****************************************************************************/
-function applyTransforms(m_model) {
-    // Transformações implementadas
-    // As linhas estão comentadas para que não
-    // seja feita nenhuma operação com matriz que não será utilizada
-    // let m_scale = scaleMatrix(1.0, 1.0, 1.0);
-    // let m_rotation = rotationMatrix(240, 'X');  // o ângulo deve ser passado em graus
-    // let m_translation = translationMatrix(-0.2, 0.0, 1.0);
-    // let m_shear = shearMatrix(2.0, 0.3, 0.3, axis='X');
-    // let m_reflection = reflectionMatrix('XY');
-    // let m_identity = identityMatrix();
+function applyTransforms(matrix, transformation, parameters) {
+    if (transformation === undefined) {
+        return identityMatrix();
+    } else {
+        // Cria uma matriz para realizar as operações
+        let resultMatrix = new THREE.Matrix4();
+        resultMatrix = identityMatrix();
+        
+        // Armazena a matriz da transformação
+        let transformMatrix = getTransforms(transformation, parameters);
 
-    // Carrega a matriz identidade em m_model
-    m_model = identityMatrix();
+        // Realiza a multiplicação
+        resultMatrix.multiply(transformMatrix);
+        matrix.multiply(resultMatrix);
 
-    // Aplica a transformação na matriz model
-    // m_model = m_model.clone().multiply(m_scale);
-    // m_model = m_model.clone().multiply(m_translation);
-    // m_model = m_model.clone().multiply(m_shear);
-    // m_model = m_model.clone().multiply(m_rotation);
-    // m_model = m_model.clone().multiply(m_reflection);
-
-    // let m_rotation2 = rotationMatrix(-20, 'Y');
-    // m_model = m_model.clone().multiply(m_rotation2);
-    
-    return m_model;
+        return matrix;
+    }
 }
 
-function scaleMatrix(scale_x=1.0, scale_y=1.0, scale_z=1.0) {
+function getTransforms(transformation, parameters) {
+    // Transformações implementadas Scale, Rotation, Translation, Shear, and Reflection
+    if (transformation == 'scale') {
+        let scale_x = parameters[0].scale_x;
+        let scale_y = parameters[0].scale_y;
+        let scale_z = parameters[0].scale_z;
+        return scaleMatrix(scale_x, scale_y, scale_z);
+    } else if (transformation == 'rotation') {
+        // tetha deve ser passado em graus
+        let tetha = parameters[0].tetha;
+        let axis = parameters[0].axis;
+        return rotationMatrix(tetha, axis);
+    } else if (transformation == 'translation') {
+        let x = parameters[0].x;
+        let y = parameters[0].y;
+        let z = parameters[0].z;
+        return translationMatrix(x, y, z);
+    } else if (transformation == 'shear') {
+        let x = parameters[0].x;
+        let y = parameters[0].y;
+        let z = parameters[0].z;
+        let axis = parameters[0].axis;
+        return shearMatrix(x, y, z, axis);
+    } else if (transformation == 'reflection') {
+        let plane = parameters[0].plane;
+        return reflectionMatrix(plane);
+    }
+}
+
+function scaleMatrix(scale_x, scale_y, scale_z) {
     // Matriz de escala
     let m_scale = new THREE.Matrix4();
 
@@ -92,7 +113,7 @@ function scaleMatrix(scale_x=1.0, scale_y=1.0, scale_z=1.0) {
     return m_scale;
 }
 
-function rotationMatrix(tetha=30, axis='X') {
+function rotationMatrix(tetha, axis) {
     // Seno e Cosseno
     let sin = Math.sin(tetha*Math.PI/180.0);
     let cos = Math.cos(tetha*Math.PI/180.0);
@@ -123,7 +144,7 @@ function rotationMatrix(tetha=30, axis='X') {
     return m_rotation;
 }
 
-function translationMatrix(x=1.0, y=1.0, z=1.0){
+function translationMatrix(x, y, z){
     // Matriz de translação
     let m_translation = new THREE.Matrix4();
 
@@ -135,7 +156,7 @@ function translationMatrix(x=1.0, y=1.0, z=1.0){
     return m_translation;
 }
 
-function shearMatrix(x=1.0, y=2.0, z=3.0, axis='X') {
+function shearMatrix(x, y, z, axis) {
     // Matriz de shear
     let m_shear = new THREE.Matrix4();
 
@@ -160,7 +181,7 @@ function shearMatrix(x=1.0, y=2.0, z=3.0, axis='X') {
     return m_shear;
 }
 
-function reflectionMatrix(plane='XY') {
+function reflectionMatrix(plane) {
     // Matriz de reflexão
     let m_reflection = new THREE.Matrix4();
 
@@ -200,8 +221,12 @@ function identityMatrix() {
 // Cria a matriz model
 let m_model = new THREE.Matrix4();
 
-// Apply transformations to m_model
-m_model = applyTransforms(m_model);
+// Aplica transformações em m_model
+// m_model = applyTransforms(m_model);  // faz m_model ser a identidade
+m_model = applyTransforms(m_model, 'rotation', [{ tetha: 240, axis: 'X'}]);
+m_model = applyTransforms(m_model, 'rotation', [{ tetha: -20, axis: 'Y'}]);
+m_model = applyTransforms(m_model, 'scale', [{ scale_x: 1, scale_y: 1, scale_z: 2}]);
+m_model = applyTransforms(m_model, 'translation', [{ x: 0, y: 0, z: .3}]);
 
 for (let i = 0; i < 8; ++i)
     vertices[i].applyMatrix4(m_model);
@@ -276,10 +301,8 @@ O.copy(cam_look_at);
 let t = P.sub(O);
 t.multiplyScalar(-1);
 
-m_t.set(1.0, 0.0, 0.0, t.x,
-        0.0, 1.0, 0.0, t.y,
-        0.0, 0.0, 1.0, t.z,
-        0.0, 0.0, 0.0, 1.0);
+// Aplica a translação a matriz m_t
+m_t = applyTransforms(m_t, 'translation', [{ x: t.x, y: t.y, z: t.z }])
 
 // Constrói a matriz de visualização 'm_view' como o produto
 //  de 'm_bt' e 'm_t'.
@@ -328,11 +351,8 @@ m_S.set(width/2, 0.0, 0.0, 0.0,
         0.0, 0.0, 1.0, 0.0,
         0.0, 0.0, 0.0, 1.0);
 
-// Matriz de translação        
-m_T.set(1.0, 0.0, 0.0, 1.0,
-        0.0, 1.0, 0.0, 1.0,
-        0.0, 0.0, 1.0, 0.0,
-        0.0, 0.0, 0.0, 1.0);
+// Matriz de translação
+m_T = applyTransforms(m_T, 'translation', [{ x: 1, y: 1, z:0 }])   
 
 // Cria a matriz view port como sendo a matriz de escala * matriz de translação
 m_viewport = m_S.clone().multiply(m_T);
