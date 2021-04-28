@@ -346,10 +346,7 @@ let width = 1024;
 let height = 768;
 
 // Matriz de escala
-m_S.set(width/2, 0.0, 0.0, 0.0,
-        0.0, height/2, 0.0, 0.0,
-        0.0, 0.0, 1.0, 0.0,
-        0.0, 0.0, 0.0, 1.0);
+m_S = applyTransforms(m_S, 'scale', { scale_x: width/2, scale_y: height/2, scale_z: 1.0 });
 
 // Matriz de translação
 m_T = applyTransforms(m_T, 'translation', { x: 1, y: 1, z:0 });
