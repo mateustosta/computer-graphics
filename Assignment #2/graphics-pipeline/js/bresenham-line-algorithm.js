@@ -52,20 +52,20 @@ function DrawPixelLineX(pixel_0, pixel_1) {
         delta_y = -delta_y;
     }
 
-    var decision_factor = 2 * delta_y - delta_x; // fator de decisão para o primeiro pixel
+    var decision_factor = (2 * delta_y) - delta_x; // fator de decisão para o primeiro pixel
 
     while (pixel_2.x <= pixel_1.x) {
         LinearColorInterpolation(pixel_0, pixel_1, pixel_2, axis = 'x');
         color_buffer.putPixel(pixel_2.x, pixel_2.y, pixel_2.color);
         // decision_factor > 0 = incremento para NE
         if (decision_factor > 0) {
-            pixel_2.y += incr_y;
-            decision_factor += 2 * (delta_y - delta_x);
+        pixel_2.y += incr_y;
+        decision_factor += 2 * (delta_y - delta_x);
         }
         else {
-            // decision_factor <= 0 = incremento para E
-            // Não incrementa y
-            decision_factor += 2 * delta_y;
+        // decision_factor <= 0 = incremento para E
+        // Não incrementa y
+        decision_factor += 2 * delta_y;
         }
         // incrementa x
         pixel_2.x++;
@@ -96,12 +96,12 @@ function DrawPixelLineY(pixel_0, pixel_1) {
         color_buffer.putPixel(pixel_2.x, pixel_2.y, pixel_2.color);
         // decision_factor > 0 = incremento para NE
         if (decision_factor > 0) {
-            pixel_2.x += incr_x;
-            decision_factor += 2 * (delta_x - delta_y);
+        pixel_2.x += incr_x;
+        decision_factor += 2 * (delta_x - delta_y);
         } else {
-            // decision_factor <= 0 = incremento para E
-            // Não incrementa x
-            decision_factor += 2 * delta_x;
+        // decision_factor <= 0 = incremento para E
+        // Não incrementa x
+        decision_factor += 2 * delta_x;
         }
         // incrementa y
         pixel_2.y++;
@@ -115,21 +115,21 @@ function DrawLine(pixel_0, pixel_1) {
 
     // delta_y < delta_x = Octantes 1, 4, 5 e 8
     if (delta_y < delta_x) {
-        // x0 > x1 = Octantes 1 e 8
+        // x0 > x1 = Octantes 4 e 5
         if (pixel_0.x > pixel_1.x) {
-            DrawPixelLineX(pixel_1, pixel_0);
+        DrawPixelLineX(pixel_1, pixel_0);
         } else {
-            // x0 < x1 = Octantes 4 e 5
-            DrawPixelLineX(pixel_0, pixel_1);
+        // x0 < x1 = Octantes 1 e 8
+        DrawPixelLineX(pixel_0, pixel_1);
         }
     } else {
         // delta_y > delta_x = Octantes 2, 3, 6 e 7
-        // y0 > y1 = Octantes 2 e 3
+        // y0 > y1 = Octantes 6 e 7
         if (pixel_0.y > pixel_1.y) {
-            DrawPixelLineY(pixel_1, pixel_0);
+        DrawPixelLineY(pixel_1, pixel_0);
         } else {
-            // y0 < y1 = Octantes 6 e 7
-            DrawPixelLineY(pixel_0, pixel_1);
+        // y0 < y1 = Octantes 2 e 3
+        DrawPixelLineY(pixel_0, pixel_1);
         }
     }
 }
