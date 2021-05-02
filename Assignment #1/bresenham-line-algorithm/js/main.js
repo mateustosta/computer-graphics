@@ -81,7 +81,7 @@ function DrawPixelLineX(pixel_0, pixel_1) {
     delta_y = -delta_y;
   }
 
-  var decision_factor = 2 * delta_y - delta_x; // fator de decisão para o primeiro pixel
+  var decision_factor = (2 * delta_y) - delta_x; // fator de decisão para o primeiro pixel
 
   while (pixel_2.x <= pixel_1.x) {
     LinearColorInterpolation(pixel_0, pixel_1, pixel_2, axis = 'x');
