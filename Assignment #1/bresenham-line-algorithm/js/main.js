@@ -144,20 +144,20 @@ function DrawLine(pixel_0, pixel_1) {
 
   // delta_y < delta_x = Octantes 1, 4, 5 e 8
   if (delta_y < delta_x) {
-    // x0 > x1 = Octantes 1 e 8
+    // x0 > x1 = Octantes 4 e 5
     if (pixel_0.x > pixel_1.x) {
       DrawPixelLineX(pixel_1, pixel_0);
     } else {
-      // x0 < x1 = Octantes 4 e 5
+      // x0 < x1 = Octantes 1 e 8
       DrawPixelLineX(pixel_0, pixel_1);
     }
   } else {
     // delta_y > delta_x = Octantes 2, 3, 6 e 7
-    // y0 > y1 = Octantes 2 e 3
+    // y0 > y1 = Octantes 6 e 7
     if (pixel_0.y > pixel_1.y) {
       DrawPixelLineY(pixel_1, pixel_0);
     } else {
-      // y0 < y1 = Octantes 6 e 7
+      // y0 < y1 = Octantes 2 e 3
       DrawPixelLineY(pixel_0, pixel_1);
     }
   }
