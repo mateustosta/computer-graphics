@@ -222,11 +222,12 @@ function identityMatrix() {
 let m_model = new THREE.Matrix4();
 
 // Aplica transformações em m_model
-// m_model = applyTransforms(m_model);  // faz m_model ser a identidade
+m_model = applyTransforms(m_model);  // faz m_model ser a identidade
 m_model = applyTransforms(m_model, 'rotation', { tetha: 240, axis: 'X'});
 m_model = applyTransforms(m_model, 'rotation', { tetha: -20, axis: 'Y'});
-m_model = applyTransforms(m_model, 'scale', { scale_x: 1, scale_y: 1, scale_z: 2});
-m_model = applyTransforms(m_model, 'translation', { x: 0, y: 0, z: .3});
+// m_model = applyTransforms(m_model, 'scale', { scale_x: 1, scale_y: 1, scale_z: 2});
+// m_model = applyTransforms(m_model, 'translation', { x: 0, y: 0, z: .3});
+// m_model = applyTransforms(m_model, 'rotation', { tetha: 90, axis: 'Y'});
 
 for (let i = 0; i < 8; ++i)
     vertices[i].applyMatrix4(m_model);
@@ -296,8 +297,7 @@ let m_t = new THREE.Matrix4();
 // O é a origem do espaço do universo
 let P = new THREE.Vector3();
 P.copy(cam_pos);
-let O = new THREE.Vector3();
-O.copy(cam_look_at);
+let O = new THREE.Vector3(0.0, 0.0, 0.0);
 let t = P.sub(O);
 t.multiplyScalar(-1);
 
@@ -308,8 +308,9 @@ m_t = applyTransforms(m_t, 'translation', { x: t.x, y: t.y, z: t.z })
 //  de 'm_bt' e 'm_t'.
 let m_view = m_bt.clone().multiply(m_t);
 
-for (let i = 0; i < 8; ++i)
+for (let i = 0; i < 8; ++i){
     vertices[i].applyMatrix4(m_view);
+}
 
 /******************************************************************************
  * Matriz de Projecao: Esp. Câmera --> Esp. Recorte
@@ -342,8 +343,8 @@ let m_viewport = new THREE.Matrix4();
 let m_T = new THREE.Matrix4();
 let m_S = new THREE.Matrix4();
 
-let width = 1024;
-let height = 768;
+let width = 128;
+let height = 128;
 
 // Matriz de escala
 m_S = applyTransforms(m_S, 'scale', { scale_x: width/2, scale_y: height/2, scale_z: 1.0 });
