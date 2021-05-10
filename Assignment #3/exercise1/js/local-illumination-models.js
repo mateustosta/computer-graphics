@@ -40,7 +40,8 @@ let rendering_uniforms = {
     Ip_diffuse_color: {type: 'vec3', value: new THREE.Color(0.7, 0.7, 0.7)},
     k_a: {type: 'vec3', value: new THREE.Color(0.25, 0.25, 0.85)},
     k_d: {type: 'vec3', value: new THREE.Color(0.25, 0.25, 0.85)},
-    k_s: {type: 'vec3', value: new THREE.Color(1, 1, 1)}
+    k_s: {type: 'vec3', value: new THREE.Color(1, 1, 1)},
+    phong_exponent: {type: 'f', value: 5}
 }
 
 //----------------------------------------------------------------------------
@@ -53,11 +54,15 @@ let material = new THREE.ShaderMaterial({
     vertexShader:'',
     fragmentShader: ''
 });
-
+ 
 //----------------------------------------------------------------------------
 // Vertex Shader
 //----------------------------------------------------------------------------
 material.vertexShader = `
+
+    // 'uniforms' definidos por mim
+    uniform float phong_exponent;
+
     // 'uniforms' contendo informações sobre a fonte de luz pontual.
     
     uniform vec3 Ip_position;
@@ -115,11 +120,37 @@ material.vertexShader = `
         //
         ///////////////////////////////////////////////////////////////////////////////
 
+        // Lambert's cosine law
+        float lambertian = max(dot(N_cam_spc, L_cam_spc), 0.0);
+
+        float specular = 0.0;
+        if (lambertian > 0.0) {
+            vec3 R = reflect(-L_cam_spc, N_cam_spc);
+            vec3 V = normalize(-position.xyz);
+            
+            // Specular term
+            float spec_angle = max(dot(R, V), 0.0);
+            specular = pow(spec_angle, phong_exponent);
+        }
+
+        vec3 ambientComponent = Ip_ambient_color * k_a;
+        vec3 diffuseComponent = Ip_diffuse_color * k_d * lambertian;
+        vec3 specularComponent = Ip_diffuse_color * k_s * specular;
+
         // 'I' : cor final (i.e. intensidade) do vértice.
         //     Neste caso, a cor retornada é vermelho. Para a realização do exercício, o aluno deverá atribuir a 'I' o valor
         //     final gerado pelo modelo local de iluminação implementado.
         
-        I = vec4(1, 0, 0, 1);
+        I = vec4(ambientComponent + diffuseComponent + specularComponent, 1.0);
+        
+        // Only diffuse
+        // I = vec4(diffuseComponent, 1.0);
+
+        // Only ambient
+        // I = vec4(ambientComponent, 1.0);
+
+        // Only specular
+        // I = vec4(specularComponent, 1.0);
 
         // 'gl_Position' : variável de sistema que conterá a posição final do vértice transformado pelo Vertex Shader.
         
