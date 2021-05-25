@@ -40,7 +40,8 @@ let rendering_uniforms = {
     Ip_diffuse_color: {type: 'vec3', value: new THREE.Color(0.7, 0.7, 0.7)},
     k_a: {type: 'vec3', value: new THREE.Color(0.25, 0.25, 0.85)},
     k_d: {type: 'vec3', value: new THREE.Color(0.25, 0.25, 0.85)},
-    k_s: {type: 'vec3', value: new THREE.Color(1, 1, 1)}
+    k_s: {type: 'vec3', value: new THREE.Color(1, 1, 1)},
+    phong_exponent: {type: 'f', value: 16}
 }
 
 //----------------------------------------------------------------------------
@@ -65,9 +66,15 @@ material.vertexShader = `
     uniform vec3 Ip_position;
 
       void main() {
+        // 'normal' : variável de sistema que contém o vetor normal do vértice (vec3) no espaço do objeto.
         Normal = normalize(normalMatrix * normal);
+        
+        // 'Position' : variável que contém o vértice (i.e. 'position') transformado para o Espaço de Câmera.
         Position = vec3(modelViewMatrix * vec4(position, 1.0));
+        
+        // 'Ip_pos_cam_spc' : variável que armazenará a posição da fonte de luz no Espaço da Câmera.
         Ip_pos_cam_spc = modelViewMatrix * vec4(Ip_position, 1.0);
+        
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }
     `;
@@ -76,6 +83,8 @@ material.vertexShader = `
 // Fragment Shader
 //----------------------------------------------------------------------------
 material.fragmentShader = `
+
+    uniform float phong_exponent;
 
     varying vec3 Normal;
     varying vec3 Position;
@@ -94,18 +103,31 @@ material.fragmentShader = `
 
     void main() {
 
+        // 'normal' : variável de sistema que contém o vetor normal do vértice (vec3) no espaço do objeto.
         vec3 N_cam_spc = normalize(Normal);
+        
+        // 'L_cam_spc' : variável que contém o vetor unitário, no Espaço de Câmera, referente à fonte de luz.
         vec3 L_cam_spc = normalize(Ip_pos_cam_spc.xyz - Position);
-        vec3 v = normalize(vec3(-Position));
-        vec3 R_cam_spc = reflect(-L_cam_spc, N_cam_spc );
+        
+        // 'eyeVec': variável que contém o vetor que aponta para a câmera
+        vec3 eyeVec = normalize(vec3(-Position));
+        
+        // 'reflect()' : função do sistema que retorna 'R_cam_spc', isto é, o vetor 'L_cam_spc' refletido 
+        //     em relação o vetor 'N_cam_spc'.
+        vec3 R_cam_spc = reflect(-L_cam_spc, N_cam_spc);
 
 
         vec3 tempI;
+        
+        // Componente ambiente
         tempI = Ip_ambient_color * k_a;
+        
+        // Componente difusa
         float diffuse = max(0.0, dot(L_cam_spc, N_cam_spc));
         tempI += Ip_diffuse_color * k_d * diffuse;
 
-        float specular = pow(max(dot(R_cam_spc, normalize(v)),0.0), 16.0);
+        // Componente especular
+        float specular = pow(max(dot(R_cam_spc, normalize(eyeVec)),0.0), phong_exponent);
         tempI += Ip_diffuse_color * k_s * specular;
 
 

@@ -113,17 +113,10 @@ material.vertexShader = `
         
         vec3 R_cam_spc = reflect(L_cam_spc, N_cam_spc);
 
-        ///////////////////////////////////////////////////////////////////////////////
-        //
-        // Escreva aqui o seu código para implementar os modelos de iluminação com 
-        // Gouraud Shading (interpolação por vértice). 
-        //
-        ///////////////////////////////////////////////////////////////////////////////
-
         // Lambert's cosine law
         float lambertian = max(dot(N_cam_spc, L_cam_spc), 0.0);
 
-        // Eye Vec
+        // 'eyeVec': variável que contém o vetor que aponta para a câmera
         vec3 eyeVec = normalize(vec3(P_cam_spc));
 
         // Ambient Term
