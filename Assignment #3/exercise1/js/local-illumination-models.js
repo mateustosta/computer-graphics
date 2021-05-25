@@ -41,7 +41,7 @@ let rendering_uniforms = {
     k_a: {type: 'vec3', value: new THREE.Color(0.25, 0.25, 0.85)},
     k_d: {type: 'vec3', value: new THREE.Color(0.25, 0.25, 0.85)},
     k_s: {type: 'vec3', value: new THREE.Color(1, 1, 1)},
-    phong_exponent: {type: 'f', value: 5}
+    phong_exponent: {type: 'f', value: 16}
 }
 
 //----------------------------------------------------------------------------
@@ -123,24 +123,20 @@ material.vertexShader = `
         // Lambert's cosine law
         float lambertian = max(dot(N_cam_spc, L_cam_spc), 0.0);
 
-        float specular = 0.0;
-        if (lambertian > 0.0) {
-            vec3 R = reflect(-L_cam_spc, N_cam_spc);
-            vec3 V = normalize(-position.xyz);
-            
-            // Specular term
-            float spec_angle = max(dot(R, V), 0.0);
-            specular = pow(spec_angle, phong_exponent);
-        }
+        // Eye Vec
+        vec3 eyeVec = normalize(vec3(P_cam_spc));
 
-        vec3 ambientComponent = Ip_ambient_color * k_a;
+        // Ambient Term
+        vec3 ambientComponent = Ip_ambient_color * k_a;    
+
+        // Diffuse Term
         vec3 diffuseComponent = Ip_diffuse_color * k_d * lambertian;
-        vec3 specularComponent = Ip_diffuse_color * k_s * specular;
-
-        // 'I' : cor final (i.e. intensidade) do vértice.
-        //     Neste caso, a cor retornada é vermelho. Para a realização do exercício, o aluno deverá atribuir a 'I' o valor
-        //     final gerado pelo modelo local de iluminação implementado.
         
+        // Specular Term
+        float specular = pow(max(dot(R_cam_spc, eyeVec), 0.0), phong_exponent);
+        vec3 specularComponent = Ip_diffuse_color * k_s * specular;
+    
+        // 'I' : cor final (i.e. intensidade) do vértice.
         I = vec4(ambientComponent + diffuseComponent + specularComponent, 1.0);
         
         // Only diffuse
