@@ -363,5 +363,5 @@ for (let i = 0; i < 8; ++i)
  *****************************************************************************/
 color = [255, 0, 0, 255];
 for (let i = 0; i < edges.length; ++i) {
-    MidPointLineAlgorithm(vertices[edges[i][0]].x, vertices[edges[i][0]].y, vertices[edges[i][1]].x, vertices[edges[i][1]].y, color, color);
+    MidPointLineAlgorithm(Math.floor(vertices[edges[i][0]].x), Math.floor(vertices[edges[i][0]].y), Math.floor(vertices[edges[i][1]].x), Math.floor(vertices[edges[i][1]].y), color, color);
 }
