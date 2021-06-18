@@ -2,17 +2,22 @@ let image = new Image();
 // image.src = src_gate;
 // image.src = src_checkerboard;
 image.src = src_senna;
+// image.src = src_brick;
 
 texture = new THREE.Texture(image);
 
 image.onload = function() {
     texture.needsUpdate = true;
-    texture.magFilter = THREE.LinearFilter;
-    texture.minFilter = THREE.NearestFilter;
-    texture.anisotropy = 1;
+    texture.magFilter = THREE.NearestFilter;
+    texture.minFilter = THREE.NearestMipmapNearestFilter;
+    texture.anisotropy = 4;
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
 };
+
+const timesToRepeatHorizontally = 5;
+const timesToRepeatVertically = 5;
+texture.repeat.set(timesToRepeatHorizontally, timesToRepeatVertically);
 
 let scene = new THREE.Scene();
 
@@ -28,7 +33,7 @@ document.body.appendChild(renderer.domElement);
 
 let controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-let geometry = new THREE.BoxGeometry(1, 1, 1);
+let geometry = new THREE.BoxGeometry(5, 5, 1);
 
 //----------------------------------------------------------------------------
 // Criação das fontes de luz pontuais (uma, mais clara, à frente e outra, 
@@ -53,9 +58,18 @@ let material = new THREE.MeshLambertMaterial({
 var object_mesh = new THREE.Mesh(geometry, material);
 scene.add(object_mesh);
 
+// camera
+// camera.position.x = -2;
+// camera.position.y = -2;
+// camera.position.z = 10;
+camera.position.x = 0.004694254773735879;
+camera.position.y = -2.958429139975135;
+camera.position.z = 0.9562980487884484;
+
 function render() {
   requestAnimationFrame(render);
   renderer.render(scene, camera);
+  // console.log(camera.position)
 }
 
 render();
