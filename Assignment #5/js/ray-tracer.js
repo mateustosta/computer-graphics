@@ -87,6 +87,67 @@ class Interseccao {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Classe que representa uma primitiva do tipo triangulo.
+// Construtor:
+//   a: Vértice do triangulo (THREE.Vector3).
+//   b: Vértice do triangulo (THREE.Vector3).
+//   c: Vértice do triangulo (THREE.Vector3).
+///////////////////////////////////////////////////////////////////////////////
+class Triangulo {
+  constructor(a, b, c) {
+    this.a = a
+    this.b = b
+    this.c = c
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////
+  // Metodo que testa a interseccao entre o raio e o triangulo.
+  // Entrada:
+  //   raio: Objeto do tipo Raio cuja a interseccao com p triangulo se quer verificar.
+  //   interseccao: Objeto do tipo Interseccao que armazena os dados da interseccao caso esta ocorra.
+  // Retorno:
+  //   Um valor booleano: 'true' caso haja interseccao; ou 'false' caso contrario.
+  ///////////////////////////////////////////////////////////////////////////////
+  interseccionar(raio, interseccao) {
+    let EPSILON = 0.000001
+
+    // calcula a normal do triangulo
+    let edge1 = this.b.clone().sub(this.a.clone())
+    let edge2 = this.c.clone().sub(this.a.clone())
+    let N = edge1.clone().cross(edge2.clone())
+
+    let pvec = raio.direcao.clone().cross(edge2.clone())
+
+    let det = edge1.clone().dot(pvec.clone())
+
+    if (det > -EPSILON && det < EPSILON) return 0
+
+    let inv_det = 1.0 / det
+
+    let tvec = raio.origem.clone().sub(this.a.clone())
+
+    let u = tvec.clone().dot(pvec.clone()) * inv_det
+
+    if (u < 0.0 || u > 1.0) return false
+
+    let qvec = tvec.clone().cross(edge1.clone())
+
+    let v = raio.direcao.clone().dot(qvec.clone()) * inv_det
+
+    if (v < 0.0 || u + v > 1.0) return false
+
+    let t = edge2.clone().dot(qvec.clone()) * inv_det
+
+    interseccao.posicao = raio.origem
+      .clone()
+      .add(raio.direcao.clone().multiplyScalar(t))
+    interseccao.normal = N.negate().normalize()
+
+    return true
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Classe que representa uma primitiva do tipo esfera.
 // Construtor:
 //   centro: Coordenadas do centro da esfera no espaco do universo (THREE.Vector3).
@@ -163,6 +224,11 @@ class Luz {
 function Render() {
   let camera = new Camera()
   let s1 = new Esfera(new THREE.Vector3(0.0, 0.0, -3.0), 1.0)
+  let t1 = new Triangulo(
+    new THREE.Vector3(-1.0, -1.0, -3.5),
+    new THREE.Vector3(1.0, 1.0, -3.0),
+    new THREE.Vector3(0.75, -1.0, -2.5)
+  )
   let Ip = new Luz(
     new THREE.Vector3(-10.0, 10.0, 4.0),
     new THREE.Vector3(0.8, 0.8, 0.8)
@@ -174,7 +240,7 @@ function Render() {
       let raio = camera.raio(x, y) // Construcao do raio primario que passa pelo centro do pixel de coordenadas (x,y).
       let interseccao = new Interseccao()
 
-      if (s1.interseccionar(raio, interseccao)) {
+      if (t1.interseccionar(raio, interseccao)) {
         // Se houver interseccao entao...
 
         let ka = new THREE.Vector3(1.0, 0.0, 0.0) // Coeficiente de reflectancia ambiente da esfera.
@@ -186,8 +252,8 @@ function Render() {
         let termo_ambiente = Ia.clone().multiply(ka) // Calculo do termo ambiente do modelo local de iluminacao.
 
         let L = Ip.posicao.clone().sub(interseccao.posicao).normalize() // Vetor que aponta para a fonte e luz pontual.
-        let R = L.clone().reflect(interseccao.normal)
-        let V = interseccao.posicao.normalize()
+        let R = L.clone().reflect(interseccao.normal) // Vetor reflexão de L sobre N
+        let V = interseccao.posicao.normalize() // Vetor que aponta para a camera
 
         // Calculo do termo difuso do modelo local de iluminacao.
         let termo_difuso = Ip.cor
