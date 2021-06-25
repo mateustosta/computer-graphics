@@ -179,11 +179,15 @@ function Render() {
 
         let ka = new THREE.Vector3(1.0, 0.0, 0.0) // Coeficiente de reflectancia ambiente da esfera.
         let kd = new THREE.Vector3(1.0, 0.0, 0.0) // Coeficiente de reflectancia difusa da esfera.
+        let ks = new THREE.Vector3(1.0, 1.0, 1.0) // Coeficiente de reflectancia especular da esfera.
         let Ia = new THREE.Vector3(0.2, 0.2, 0.2) // Intensidade da luz ambiente.
+        let phong = 32 // Expoente de Phong
 
         let termo_ambiente = Ia.clone().multiply(ka) // Calculo do termo ambiente do modelo local de iluminacao.
 
         let L = Ip.posicao.clone().sub(interseccao.posicao).normalize() // Vetor que aponta para a fonte e luz pontual.
+        let R = L.clone().reflect(interseccao.normal)
+        let V = interseccao.posicao.normalize()
 
         // Calculo do termo difuso do modelo local de iluminacao.
         let termo_difuso = Ip.cor
@@ -191,7 +195,13 @@ function Render() {
           .multiply(kd)
           .multiplyScalar(Math.max(0.0, interseccao.normal.dot(L)))
 
-        PutPixel(x, y, termo_difuso.add(termo_ambiente)) // Combina os termos difuso e ambiente e pinta o pixel.
+        // Calculo do termo especular do modelo local de ilumicacao.
+        let termo_especular = Ip.cor
+          .clone()
+          .multiply(ks)
+          .multiplyScalar(Math.pow(Math.max(0.0, R.dot(V)), phong))
+
+        PutPixel(x, y, termo_difuso.add(termo_ambiente).add(termo_especular)) // Combina os termos difuso, ambiente e especular e pinta o pixel.
       } // Senao houver interseccao entao...
       else PutPixel(x, y, new THREE.Vector3(0.0, 0.0, 0.0)) // Pinta o pixel com a cor de fundo.
     }
