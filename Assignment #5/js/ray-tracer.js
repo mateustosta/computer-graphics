@@ -103,7 +103,7 @@ class Triangulo {
   ///////////////////////////////////////////////////////////////////////////////
   // Metodo que testa a interseccao entre o raio e o triangulo.
   // Entrada:
-  //   raio: Objeto do tipo Raio cuja a interseccao com p triangulo se quer verificar.
+  //   raio: Objeto do tipo Raio cuja a interseccao com o triangulo se quer verificar.
   //   interseccao: Objeto do tipo Interseccao que armazena os dados da interseccao caso esta ocorra.
   // Retorno:
   //   Um valor booleano: 'true' caso haja interseccao; ou 'false' caso contrario.
@@ -111,33 +111,43 @@ class Triangulo {
   interseccionar(raio, interseccao) {
     let EPSILON = 0.000001
 
-    // calcula a normal do triangulo
+    // calcula as arestas quem compartilham o vértice 'a'
     let edge1 = this.b.clone().sub(this.a.clone())
     let edge2 = this.c.clone().sub(this.a.clone())
+
+    // calcula a normal
     let N = edge1.clone().cross(edge2.clone())
 
+    // começa a calcular o determinante
     let pvec = raio.direcao.clone().cross(edge2.clone())
 
+    // se o valor do detemrinante for algo próximo
+    // a zero o raio estará no plano
     let det = edge1.clone().dot(pvec.clone())
 
-    if (det > -EPSILON && det < EPSILON) return 0
+    // testa o determinante
+    if (det > -EPSILON && det < EPSILON) return false
 
+    // inverte o determinante
     let inv_det = 1.0 / det
 
+    // calcula a distancia do vértice 'a' até a origem do raio
     let tvec = raio.origem.clone().sub(this.a.clone())
 
+    // calcula o parâmetro U e testa os limites
     let u = tvec.clone().dot(pvec.clone()) * inv_det
-
     if (u < 0.0 || u > 1.0) return false
 
+    // calcula o parâmetro V e testa os limites
     let qvec = tvec.clone().cross(edge1.clone())
-
     let v = raio.direcao.clone().dot(qvec.clone()) * inv_det
-
     if (v < 0.0 || u + v > 1.0) return false
 
+    // calcula t, o raio interseccionou o triangulo
     let t = edge2.clone().dot(qvec.clone()) * inv_det
 
+    // calcula a posição do ponto de intersecção e
+    // a normal do ponto de intersecçao
     interseccao.posicao = raio.origem
       .clone()
       .add(raio.direcao.clone().multiplyScalar(t))
@@ -224,10 +234,12 @@ class Luz {
 function Render() {
   let camera = new Camera()
   let s1 = new Esfera(new THREE.Vector3(0.0, 0.0, -3.0), 1.0)
+  let s2 = new Esfera(new THREE.Vector3(0.0, -14.0, -3.0), 12.0)
+  let s3 = new Esfera(new THREE.Vector3(2.0, 1.0, -3.0), 0.5)
   let t1 = new Triangulo(
-    new THREE.Vector3(-1.0, -1.0, -3.5),
-    new THREE.Vector3(1.0, 1.0, -3.0),
-    new THREE.Vector3(0.75, -1.0, -2.5)
+    new THREE.Vector3(-10.0, 10.0, -3.5),
+    new THREE.Vector3(10.0, 10.0, -3.0),
+    new THREE.Vector3(0.0, -4.0, -2.5)
   )
   let Ip = new Luz(
     new THREE.Vector3(-10.0, 10.0, 4.0),
@@ -240,20 +252,25 @@ function Render() {
       let raio = camera.raio(x, y) // Construcao do raio primario que passa pelo centro do pixel de coordenadas (x,y).
       let interseccao = new Interseccao()
 
-      if (t1.interseccionar(raio, interseccao)) {
+      if (
+        s1.interseccionar(raio, interseccao) ||
+        s2.interseccionar(raio, interseccao) ||
+        s3.interseccionar(raio, interseccao) ||
+        t1.interseccionar(raio, interseccao)
+      ) {
         // Se houver interseccao entao...
 
         let ka = new THREE.Vector3(1.0, 0.0, 0.0) // Coeficiente de reflectancia ambiente da esfera.
         let kd = new THREE.Vector3(1.0, 0.0, 0.0) // Coeficiente de reflectancia difusa da esfera.
         let ks = new THREE.Vector3(1.0, 1.0, 1.0) // Coeficiente de reflectancia especular da esfera.
         let Ia = new THREE.Vector3(0.2, 0.2, 0.2) // Intensidade da luz ambiente.
-        let phong = 32 // Expoente de Phong
+        let phong = 64 // Expoente de phong
 
         let termo_ambiente = Ia.clone().multiply(ka) // Calculo do termo ambiente do modelo local de iluminacao.
 
         let L = Ip.posicao.clone().sub(interseccao.posicao).normalize() // Vetor que aponta para a fonte e luz pontual.
-        let R = L.clone().reflect(interseccao.normal) // Vetor reflexão de L sobre N
-        let V = interseccao.posicao.normalize() // Vetor que aponta para a camera
+        let R = L.clone().reflect(interseccao.normal) // Vetor reflexão de L sobre N.
+        let V = interseccao.posicao.normalize() // Vetor que aponta para a camera.
 
         // Calculo do termo difuso do modelo local de iluminacao.
         let termo_difuso = Ip.cor
@@ -261,13 +278,13 @@ function Render() {
           .multiply(kd)
           .multiplyScalar(Math.max(0.0, interseccao.normal.dot(L)))
 
-        // Calculo do termo especular do modelo local de ilumicacao.
+        // Calculo do termo especular do modelo local de iluminação.
         let termo_especular = Ip.cor
           .clone()
           .multiply(ks)
           .multiplyScalar(Math.pow(Math.max(0.0, R.dot(V)), phong))
 
-        PutPixel(x, y, termo_difuso.add(termo_ambiente).add(termo_especular)) // Combina os termos difuso, ambiente e especular e pinta o pixel.
+        PutPixel(x, y, termo_difuso.add(termo_ambiente).add(termo_especular)) // Combina os termos difuso e ambiente e pinta o pixel.
       } // Senao houver interseccao entao...
       else PutPixel(x, y, new THREE.Vector3(0.0, 0.0, 0.0)) // Pinta o pixel com a cor de fundo.
     }
